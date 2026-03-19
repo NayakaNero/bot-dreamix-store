@@ -21,7 +21,7 @@ module.exports = {
             judul: null,
             nama: null,
             deskripsi: null,
-            warna: '#8B0000',
+            warna: '#8d2dfb', // <-- DIUBAH JADI UNGU
             footer: null,
             gambar: null,
             thumbnail: null,
@@ -101,7 +101,7 @@ module.exports = {
 
         // INFO EMBED
         const infoEmbed = new EmbedBuilder()
-            .setColor('#8d2dfb')
+            .setColor('#8d2dfb') // <-- DIUBAH JADI UNGU
             .setTitle('🎨 **EMBED BUILDER - JARAK AUTHOR & GAMBAR**')
             .setDescription(`
 Halo <@${message.author.id}>! 
@@ -133,7 +133,7 @@ Halo <@${message.author.id}>!
             judul: null,
             nama: null,
             deskripsi: null,
-            warna: '#8B0000',
+            warna: '#8d2dfb', // <-- DIUBAH JADI UNGU
             footer: null,
             gambar: null,
             thumbnail: null,
@@ -245,7 +245,7 @@ Halo <@${message.author.id}>!
                     .setCustomId('warna')
                     .setLabel('Warna (HEX atau nama)')
                     .setStyle(TextInputStyle.Short)
-                    .setPlaceholder('#8d2dfb atau UNGU')
+                    .setPlaceholder('#8d2dfb atau UNGU') // <-- DIUBAH JADI UNGU
                     .setRequired(false)
                     .setValue(session.warna);
 
@@ -527,7 +527,7 @@ Halo <@${message.author.id}>!
             judul: null,
             nama: null,
             deskripsi: null,
-            warna: '#8B0000',
+            warna: '#8d2dfb', // <-- DIUBAH JADI UNGU
             footer: null,
             gambar: null,
             thumbnail: null,
@@ -549,7 +549,7 @@ Halo <@${message.author.id}>!
                 session.deskripsi = interaction.fields.getTextInputValue('deskripsi');
             }
             else if (modalId === 'modal_warna') {
-                let warna = interaction.fields.getTextInputValue('warna') || '#8B0000';
+                let warna = interaction.fields.getTextInputValue('warna') || '#8d2dfb'; // <-- DIUBAH JADI UNGU
                 
                 const warnaMap = {
                     'red': '#FF0000', 'blue': '#0000FF', 'green': '#00FF00',

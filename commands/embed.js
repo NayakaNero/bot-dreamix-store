@@ -1,4 +1,4 @@
-// commands/embed.js - FIELD WITH BLACK BOX OPTION + TANPA TIMESTAMP
+// commands/embed.js - FIELD WITH BLACK BOX OPTION + BUTTON AUTHOR SIMPLE
 const { 
     EmbedBuilder, 
     ActionRowBuilder, 
@@ -51,7 +51,7 @@ module.exports = {
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId('embed_author')
-                    .setLabel('👤 Author (Toggle Default)')
+                    .setLabel('👤 Author') // <-- DIUBAH: simpler, tanpa (Toggle Default)
                     .setStyle(ButtonStyle.Primary),
                 new ButtonBuilder()
                     .setCustomId('embed_warna')
@@ -102,7 +102,7 @@ module.exports = {
         // INFO EMBED
         const infoEmbed = new EmbedBuilder()
             .setColor('#8B0000')
-            .setTitle('🎨 **EMBED BUILDER - TANPA TIMESTAMP**')
+            .setTitle('🎨 **EMBED BUILDER - BUTTON AUTHOR SIMPLE**')
             .setDescription(`
 Halo <@${message.author.id}>! 
 
@@ -209,7 +209,7 @@ Halo <@${message.author.id}>!
                 await interaction.showModal(modal);
             }
 
-            // AUTHOR BUTTON - TOGGLE DEFAULT
+            // AUTHOR BUTTON - TOGGLE DEFAULT (tetap sama fungsinya, hanya label button yang berubah)
             else if (customId === 'embed_author') {
                 // Data default author
                 const defaultAuthor = {
@@ -404,7 +404,6 @@ Halo <@${message.author.id}>!
                 const previewEmbed = new EmbedBuilder()
                     .setColor(session.warna)
                     .setDescription(descriptionText || '​');
-                    // .setTimestamp() - DIHAPUS!
 
                 // AUTHOR
                 if (session.author) {
@@ -465,7 +464,6 @@ Halo <@${message.author.id}>!
                 const finalEmbed = new EmbedBuilder()
                     .setColor(session.warna)
                     .setDescription(descriptionText || '​');
-                    // .setTimestamp() - DIHAPUS!
 
                 // AUTHOR
                 if (session.author) {

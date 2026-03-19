@@ -245,7 +245,7 @@ Halo <@${message.author.id}>!
                     .setCustomId('warna')
                     .setLabel('Warna (HEX atau nama)')
                     .setStyle(TextInputStyle.Short)
-                    .setPlaceholder('#8B0000 atau MAROON')
+                    .setPlaceholder('#8d2dfb atau UNGU')
                     .setRequired(false)
                     .setValue(session.warna);
 

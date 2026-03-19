@@ -1,4 +1,4 @@
-// commands/embed.js - FIELD WITH BLACK BOX OPTION (FIXED VERSION)
+// commands/embed.js - FIELD WITH BLACK BOX OPTION (FIXED VERSION - RAPI & NO FOOTER)
 const { 
     EmbedBuilder, 
     ActionRowBuilder, 
@@ -125,7 +125,7 @@ Halo <@${message.author.id}>!
 • Full body: 50k
 \`\`\`
             `)
-            .setFooter({ text: '' }); // <-- FOOTER KOSONG biar ga ada "Embed by"
+            .setFooter({ text: '' }); // FOOTER KOSONG biar ga ada "Embed by"
 
         await message.channel.send({ 
             embeds: [infoEmbed], 
@@ -389,7 +389,7 @@ Halo <@${message.author.id}>!
                 if (session.footer) {
                     previewEmbed.setFooter({ text: session.footer });
                 } else {
-                    previewEmbed.setFooter({ text: '' }); // <-- FOOTER KOSONG
+                    previewEmbed.setFooter({ text: '' }); // FOOTER KOSONG
                 }
 
                 await interaction.reply({ 
@@ -439,7 +439,7 @@ Halo <@${message.author.id}>!
                 if (session.footer) {
                     finalEmbed.setFooter({ text: session.footer });
                 } else {
-                    finalEmbed.setFooter({ text: '' }); // <-- FOOTER KOSONG
+                    finalEmbed.setFooter({ text: '' }); // FOOTER KOSONG
                 }
 
                 await interaction.channel.send({ 

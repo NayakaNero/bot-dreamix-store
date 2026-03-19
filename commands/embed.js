@@ -101,7 +101,7 @@ module.exports = {
 
         // INFO EMBED
         const infoEmbed = new EmbedBuilder()
-            .setColor('#8B0000')
+            .setColor('#8d2dfb')
             .setTitle('🎨 **EMBED BUILDER - JARAK AUTHOR & GAMBAR**')
             .setDescription(`
 Halo <@${message.author.id}>! 

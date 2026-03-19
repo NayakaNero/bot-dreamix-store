@@ -1,4 +1,4 @@
-// commands/embed.js - FIELD WITH BLACK BOX OPTION + JARAK AUTHOR RAPAT
+// commands/embed.js - FIELD WITH BLACK BOX OPTION + JARAK AUTHOR FINAL
 const { 
     EmbedBuilder, 
     ActionRowBuilder, 
@@ -102,7 +102,7 @@ module.exports = {
         // INFO EMBED
         const infoEmbed = new EmbedBuilder()
             .setColor('#8B0000')
-            .setTitle('🎨 **EMBED BUILDER - JARAK AUTHOR RAPAT**')
+            .setTitle('🎨 **EMBED BUILDER - JARAK AUTHOR FINAL**')
             .setDescription(`
 Halo <@${message.author.id}>! 
 
@@ -367,26 +367,35 @@ Halo <@${message.author.id}>!
                 }
             }
 
-            // PREVIEW BUTTON - JARAK AUTHOR RAPAT MESKI TANPA JUDUL
+            // PREVIEW BUTTON - JARAK AUTHOR 0 KALAU TANPA JUDUL
             else if (customId === 'embed_preview') {
                 let descriptionText = '';
                 
-                // AUTHOR OTOMATIS DIATAS - TANPA ENTER EXTRA
-                // (author tidak masuk description, jadi tidak perlu diatur)
-                
-                // Judul - HANYA TAMBAH 1 ENTER
+                // KALAU ADA JUDUL
                 if (session.judul) {
                     descriptionText += `**${session.judul}**\n`;
-                }
-                
-                // Nama - HANYA TAMBAH 1 ENTER
-                if (session.nama) {
-                    descriptionText += `*${session.nama}*\n`;
-                }
-                
-                // Deskripsi - HANYA TAMBAH 1 ENTER
-                if (session.deskripsi) {
-                    descriptionText += session.deskripsi + '\n';
+                    
+                    // KALAU ADA NAMA SETELAH JUDUL
+                    if (session.nama) {
+                        descriptionText += `*${session.nama}*\n`;
+                    }
+                    
+                    // KALAU ADA DESKRIPSI SETELAH JUDUL
+                    if (session.deskripsi) {
+                        descriptionText += session.deskripsi + '\n';
+                    }
+                } 
+                // KALAU TIDAK ADA JUDUL
+                else {
+                    // LANGSUNG NAMA (TANPA ENTER SEBELUMNYA)
+                    if (session.nama) {
+                        descriptionText += `*${session.nama}*\n`;
+                    }
+                    
+                    // LANGSUNG DESKRIPSI (TANPA ENTER SEBELUMNYA)
+                    if (session.deskripsi) {
+                        descriptionText += session.deskripsi + '\n';
+                    }
                 }
                 
                 // Fields
@@ -404,7 +413,7 @@ Halo <@${message.author.id}>!
                     .setColor(session.warna)
                     .setDescription(descriptionText || '​');
 
-                // AUTHOR - AKAN TAMPIL DI ATAS SENDIRI
+                // AUTHOR
                 if (session.author) {
                     if (session.authorIcon?.match(/^https?:\/\//)) {
                         previewEmbed.setAuthor({ 
@@ -434,23 +443,35 @@ Halo <@${message.author.id}>!
                 });
             }
 
-            // KIRIM BUTTON - JARAK AUTHOR RAPAT MESKI TANPA JUDUL
+            // KIRIM BUTTON - JARAK AUTHOR 0 KALAU TANPA JUDUL
             else if (customId === 'embed_kirim') {
                 let descriptionText = '';
                 
-                // Judul
+                // KALAU ADA JUDUL
                 if (session.judul) {
                     descriptionText += `**${session.judul}**\n`;
-                }
-                
-                // Nama
-                if (session.nama) {
-                    descriptionText += `*${session.nama}*\n`;
-                }
-                
-                // Deskripsi
-                if (session.deskripsi) {
-                    descriptionText += session.deskripsi + '\n';
+                    
+                    // KALAU ADA NAMA SETELAH JUDUL
+                    if (session.nama) {
+                        descriptionText += `*${session.nama}*\n`;
+                    }
+                    
+                    // KALAU ADA DESKRIPSI SETELAH JUDUL
+                    if (session.deskripsi) {
+                        descriptionText += session.deskripsi + '\n';
+                    }
+                } 
+                // KALAU TIDAK ADA JUDUL
+                else {
+                    // LANGSUNG NAMA (TANPA ENTER SEBELUMNYA)
+                    if (session.nama) {
+                        descriptionText += `*${session.nama}*\n`;
+                    }
+                    
+                    // LANGSUNG DESKRIPSI (TANPA ENTER SEBELUMNYA)
+                    if (session.deskripsi) {
+                        descriptionText += session.deskripsi + '\n';
+                    }
                 }
                 
                 // Fields

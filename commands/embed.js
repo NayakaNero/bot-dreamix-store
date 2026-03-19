@@ -1,4 +1,4 @@
-// commands/embed.js - FIELD WITH BLACK BOX OPTION (FIXED VERSION - NO EMPTY FOOTER)
+// commands/embed.js - FIELD WITH BLACK BOX OPTION + AUTHOR FITUR
 const { 
     EmbedBuilder, 
     ActionRowBuilder, 
@@ -25,6 +25,8 @@ module.exports = {
             footer: null,
             gambar: null,
             thumbnail: null,
+            author: null, // <-- TAMBAHAN AUTHOR
+            authorIcon: null, // <-- TAMBAHAN ICON AUTHOR
             fields: [] // [{ name: '...', value: '...', inline: false, useBox: false }]
         });
 
@@ -48,6 +50,10 @@ module.exports = {
         const row2 = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
+                    .setCustomId('embed_author') // <-- BUTTON AUTHOR BARU
+                    .setLabel('👤 Author')
+                    .setStyle(ButtonStyle.Primary),
+                new ButtonBuilder()
                     .setCustomId('embed_warna')
                     .setLabel('🎨 Warna')
                     .setStyle(ButtonStyle.Primary),
@@ -58,15 +64,15 @@ module.exports = {
                 new ButtonBuilder()
                     .setCustomId('embed_thumbnail')
                     .setLabel('📸 Thumbnail')
-                    .setStyle(ButtonStyle.Secondary),
-                new ButtonBuilder()
-                    .setCustomId('embed_footer')
-                    .setLabel('📌 Footer')
                     .setStyle(ButtonStyle.Secondary)
             );
 
         const row3 = new ActionRowBuilder()
             .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('embed_footer')
+                    .setLabel('📌 Footer')
+                    .setStyle(ButtonStyle.Secondary),
                 new ButtonBuilder()
                     .setCustomId('embed_field_add')
                     .setLabel('➕ Tambah Field')
@@ -93,12 +99,16 @@ module.exports = {
                     .setStyle(ButtonStyle.Secondary)
             );
 
-        // INFO EMBED - TANPA .setFooter (FIXED)
+        // INFO EMBED
         const infoEmbed = new EmbedBuilder()
             .setColor('#8B0000')
-            .setTitle('🎨 **EMBED BUILDER - FIELD & BOX**')
+            .setTitle('🎨 **EMBED BUILDER - FIELD & BOX + AUTHOR**')
             .setDescription(`
 Halo <@${message.author.id}>! 
+
+**✨ FITUR BARU: AUTHOR**
+• Klik button **👤 Author** untuk set author
+• Bisa tambah nama author dan icon URL
 
 **✨ FITUR FIELD:**
 • Bisa tambah field berkali-kali
@@ -126,7 +136,6 @@ Halo <@${message.author.id}>!
 • Full body: 50k
 \`\`\`
             `);
-            // .setFooter({ text: '' }) TIDAK DIPAKAI
 
         await message.channel.send({ 
             embeds: [infoEmbed], 
@@ -147,6 +156,8 @@ Halo <@${message.author.id}>!
             footer: null,
             gambar: null,
             thumbnail: null,
+            author: null,
+            authorIcon: null,
             fields: []
         };
 
@@ -210,6 +221,36 @@ Halo <@${message.author.id}>!
 
                 const row = new ActionRowBuilder().addComponents(descInput);
                 modal.addComponents(row);
+                await interaction.showModal(modal);
+            }
+
+            // AUTHOR BUTTON (BARU!)
+            else if (customId === 'embed_author') {
+                const modal = new ModalBuilder()
+                    .setCustomId('modal_author')
+                    .setTitle('👤 Author');
+
+                const authorNameInput = new TextInputBuilder()
+                    .setCustomId('author_name')
+                    .setLabel('Nama Author')
+                    .setStyle(TextInputStyle.Short)
+                    .setPlaceholder('Contoh: Dreamix Store')
+                    .setRequired(false)
+                    .setMaxLength(256)
+                    .setValue(session.author || '');
+
+                const authorIconInput = new TextInputBuilder()
+                    .setCustomId('author_icon')
+                    .setLabel('URL Icon Author (opsional)')
+                    .setStyle(TextInputStyle.Short)
+                    .setPlaceholder('https://...')
+                    .setRequired(false)
+                    .setValue(session.authorIcon || '');
+
+                const row1 = new ActionRowBuilder().addComponents(authorNameInput);
+                const row2 = new ActionRowBuilder().addComponents(authorIconInput);
+                
+                modal.addComponents(row1, row2);
                 await interaction.showModal(modal);
             }
 
@@ -345,7 +386,7 @@ Halo <@${message.author.id}>!
                 }
             }
 
-            // PREVIEW BUTTON - FIXED (TANPA ELSE EMPTY FOOTER)
+            // PREVIEW BUTTON
             else if (customId === 'embed_preview') {
                 let descriptionText = '';
                 
@@ -379,6 +420,18 @@ Halo <@${message.author.id}>!
                     .setColor(session.warna)
                     .setDescription(descriptionText || '​');
 
+                // AUTHOR (BARU!)
+                if (session.author) {
+                    if (session.authorIcon?.match(/^https?:\/\//)) {
+                        previewEmbed.setAuthor({ 
+                            name: session.author, 
+                            iconURL: session.authorIcon 
+                        });
+                    } else {
+                        previewEmbed.setAuthor({ name: session.author });
+                    }
+                }
+
                 if (session.gambar?.match(/^https?:\/\//)) {
                     previewEmbed.setImage(session.gambar);
                 }
@@ -387,7 +440,6 @@ Halo <@${message.author.id}>!
                     previewEmbed.setThumbnail(session.thumbnail);
                 }
 
-                // FOOTER - HANYA JIKA ADA, TANPA ELSE EMPTY
                 if (session.footer) {
                     previewEmbed.setFooter({ text: session.footer });
                 }
@@ -398,7 +450,7 @@ Halo <@${message.author.id}>!
                 });
             }
 
-            // KIRIM BUTTON - FIXED (TANPA ELSE EMPTY FOOTER & TANPA CONTENT USER)
+            // KIRIM BUTTON
             else if (customId === 'embed_kirim') {
                 let descriptionText = '';
                 
@@ -428,6 +480,18 @@ Halo <@${message.author.id}>!
                     .setColor(session.warna)
                     .setDescription(descriptionText || '​');
 
+                // AUTHOR (BARU!)
+                if (session.author) {
+                    if (session.authorIcon?.match(/^https?:\/\//)) {
+                        finalEmbed.setAuthor({ 
+                            name: session.author, 
+                            iconURL: session.authorIcon 
+                        });
+                    } else {
+                        finalEmbed.setAuthor({ name: session.author });
+                    }
+                }
+
                 if (session.gambar?.match(/^https?:\/\//)) {
                     finalEmbed.setImage(session.gambar);
                 }
@@ -436,7 +500,6 @@ Halo <@${message.author.id}>!
                     finalEmbed.setThumbnail(session.thumbnail);
                 }
                 
-                // FOOTER - HANYA JIKA ADA, TANPA ELSE EMPTY
                 if (session.footer) {
                     finalEmbed.setFooter({ text: session.footer });
                 }
@@ -481,6 +544,8 @@ Halo <@${message.author.id}>!
             footer: null,
             gambar: null,
             thumbnail: null,
+            author: null,
+            authorIcon: null,
             fields: []
         };
 
@@ -495,6 +560,10 @@ Halo <@${message.author.id}>!
             }
             else if (modalId === 'modal_deskripsi') {
                 session.deskripsi = interaction.fields.getTextInputValue('deskripsi');
+            }
+            else if (modalId === 'modal_author') { // <-- MODAL AUTHOR BARU
+                session.author = interaction.fields.getTextInputValue('author_name');
+                session.authorIcon = interaction.fields.getTextInputValue('author_icon');
             }
             else if (modalId === 'modal_warna') {
                 let warna = interaction.fields.getTextInputValue('warna') || '#8B0000';
@@ -537,11 +606,19 @@ Halo <@${message.author.id}>!
 
             client.embedSessions.set(userId, session);
             
-            const boxCount = session.fields?.filter(f => f.useBox).length || 0;
-            const defaultCount = session.fields?.length - boxCount || 0;
+            let replyMessage = '';
+            if (modalId === 'modal_author') {
+                replyMessage = `✅ Author disimpan: ${session.author || '(kosong)'}`;
+            } else if (modalId === 'modal_field_add') {
+                const boxCount = session.fields?.filter(f => f.useBox).length || 0;
+                const defaultCount = session.fields?.length - boxCount || 0;
+                replyMessage = `✅ Field ditambahkan! Total: ${session.fields?.length || 0} (${defaultCount} default, ${boxCount} box)`;
+            } else {
+                replyMessage = '✅ Berhasil disimpan!';
+            }
             
             await interaction.reply({ 
-                content: `✅ Field ditambahkan! Total: ${session.fields?.length || 0} (${defaultCount} default, ${boxCount} box)`, 
+                content: replyMessage, 
                 ephemeral: true 
             });
 

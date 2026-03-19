@@ -1,4 +1,4 @@
-// commands/embed.js - FIELD WITH BLACK BOX OPTION + CARL-BOT STYLE (NAMA BOT + APP LABEL)
+// commands/embed.js - FIELD WITH BLACK BOX OPTION + AUTHOR TOGGLE DEFAULT
 const { 
     EmbedBuilder, 
     ActionRowBuilder, 
@@ -51,7 +51,7 @@ module.exports = {
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId('embed_author')
-                    .setLabel('👤 Author (Carl-bot style)')
+                    .setLabel('👤 Author (Toggle Default)')
                     .setStyle(ButtonStyle.Primary),
                 new ButtonBuilder()
                     .setCustomId('embed_warna')
@@ -102,27 +102,26 @@ module.exports = {
         // INFO EMBED
         const infoEmbed = new EmbedBuilder()
             .setColor('#8B0000')
-            .setTitle('🎨 **EMBED BUILDER - CARL-BOT STYLE**')
+            .setTitle('🎨 **EMBED BUILDER - AUTHOR TOGGLE DEFAULT**')
             .setDescription(`
 Halo <@${message.author.id}>! 
 
-**✨ FITUR CARL-BOT:**
-• **Author** otomatis tampil di atas (seperti Carl-bot)
-• **Timestamp** otomatis muncul di kanan
-• Bisa set nama author dan icon
+**✨ FITUR AUTHOR DEFAULT:**
+• Klik **👤 Author** sekali → otomatis aktif dengan:
+  **Dreamix Store** + icon default
+• Klik **👤 Author** lagi → author mati
+• Tidak perlu isi manual!
 
 **📝 CARA PAKAI:**
-1. Klik **👤 Author** untuk set nama (contoh: Dreamix Store)
+1. Klik **👤 Author** untuk toggle on/off
 2. Isi judul, deskripsi, field seperti biasa
 3. Preview untuk lihat hasil
 4. Kirim!
 
 **📋 CONTOH:**
-• Author: Dreamix Store
+• Author: Dreamix Store (otomatis)
 • Judul: Anime Art
 • Field: Harga-harga
-
-Hasilnya akan seperti Carl-bot!
             `);
 
         await message.channel.send({ 
@@ -212,34 +211,34 @@ Hasilnya akan seperti Carl-bot!
                 await interaction.showModal(modal);
             }
 
-            // AUTHOR BUTTON
+            // AUTHOR BUTTON - TOGGLE DEFAULT (FIXED)
             else if (customId === 'embed_author') {
-                const modal = new ModalBuilder()
-                    .setCustomId('modal_author')
-                    .setTitle('👤 Author (Carl-bot style)');
+                // Data default author
+                const defaultAuthor = {
+                    name: 'Dreamix Store',
+                    iconURL: 'https://cdn.discordapp.com/attachments/1483426646848700430/1484246287439233265/Tak_berjudul254_20260311091948.jpg?ex=69bd8792&is=69bc3612&hm=1d66c294f57e7ec395e1ac5d9f8c249013f124bc05533aa73c68e568a8d58412&'
+                };
 
-                const authorNameInput = new TextInputBuilder()
-                    .setCustomId('author_name')
-                    .setLabel('Nama Author (contoh: Dreamix Store)')
-                    .setStyle(TextInputStyle.Short)
-                    .setPlaceholder('Dreamix Store')
-                    .setRequired(true)
-                    .setMaxLength(256)
-                    .setValue(session.author || '');
-
-                const authorIconInput = new TextInputBuilder()
-                    .setCustomId('author_icon')
-                    .setLabel('URL Icon Author (opsional)')
-                    .setStyle(TextInputStyle.Short)
-                    .setPlaceholder('https://...')
-                    .setRequired(false)
-                    .setValue(session.authorIcon || '');
-
-                const row1 = new ActionRowBuilder().addComponents(authorNameInput);
-                const row2 = new ActionRowBuilder().addComponents(authorIconInput);
-                
-                modal.addComponents(row1, row2);
-                await interaction.showModal(modal);
+                // Cek apakah author sudah aktif (menggunakan data default)
+                if (session.author === defaultAuthor.name && session.authorIcon === defaultAuthor.iconURL) {
+                    // Jika sudah aktif, matikan (set null)
+                    session.author = null;
+                    session.authorIcon = null;
+                    client.embedSessions.set(userId, session);
+                    await interaction.reply({ 
+                        content: '❌ Author dimatikan.', 
+                        ephemeral: true 
+                    });
+                } else {
+                    // Jika belum aktif, aktifkan dengan data default
+                    session.author = defaultAuthor.name;
+                    session.authorIcon = defaultAuthor.iconURL;
+                    client.embedSessions.set(userId, session);
+                    await interaction.reply({ 
+                        content: `✅ Author diaktifkan: **${defaultAuthor.name}**`, 
+                        ephemeral: true 
+                    });
+                }
             }
 
             // WARNA BUTTON
@@ -407,7 +406,7 @@ Hasilnya akan seperti Carl-bot!
                 const previewEmbed = new EmbedBuilder()
                     .setColor(session.warna)
                     .setDescription(descriptionText || '​')
-                    .setTimestamp(); // <-- TIMESTAMP OTOMATIS (Carl-bot style)
+                    .setTimestamp();
 
                 // AUTHOR
                 if (session.author) {
@@ -468,7 +467,7 @@ Hasilnya akan seperti Carl-bot!
                 const finalEmbed = new EmbedBuilder()
                     .setColor(session.warna)
                     .setDescription(descriptionText || '​')
-                    .setTimestamp(); // <-- TIMESTAMP OTOMATIS (Carl-bot style)
+                    .setTimestamp();
 
                 // AUTHOR
                 if (session.author) {
@@ -551,10 +550,6 @@ Hasilnya akan seperti Carl-bot!
             else if (modalId === 'modal_deskripsi') {
                 session.deskripsi = interaction.fields.getTextInputValue('deskripsi');
             }
-            else if (modalId === 'modal_author') {
-                session.author = interaction.fields.getTextInputValue('author_name');
-                session.authorIcon = interaction.fields.getTextInputValue('author_icon');
-            }
             else if (modalId === 'modal_warna') {
                 let warna = interaction.fields.getTextInputValue('warna') || '#8B0000';
                 
@@ -593,13 +588,16 @@ Hasilnya akan seperti Carl-bot!
                     useBox: fieldType === 'box'
                 });
             }
+            // MODAL AUTHOR TIDAK DIPAKAI LAGI, TAPI TETAP DI SINI UNTUK KOMPATIBILITAS
+            else if (modalId === 'modal_author') {
+                // Tidak melakukan apa-apa, karena author sekarang pakai toggle
+                // Bisa dihapus atau dibiarkan saja
+            }
 
             client.embedSessions.set(userId, session);
             
             let replyMessage = '';
-            if (modalId === 'modal_author') {
-                replyMessage = `✅ Author disimpan: ${session.author || '(kosong)'}`;
-            } else if (modalId === 'modal_field_add') {
+            if (modalId === 'modal_field_add') {
                 const boxCount = session.fields?.filter(f => f.useBox).length || 0;
                 const defaultCount = session.fields?.length - boxCount || 0;
                 replyMessage = `✅ Field ditambahkan! Total: ${session.fields?.length || 0} (${defaultCount} default, ${boxCount} box)`;

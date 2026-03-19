@@ -1,4 +1,4 @@
-// commands/embed.js - FIELD WITH BLACK BOX OPTION
+// commands/embed.js - FIELD WITH BLACK BOX OPTION (FIXED VERSION)
 const { 
     EmbedBuilder, 
     ActionRowBuilder, 
@@ -103,25 +103,29 @@ Halo <@${message.author.id}>!
 • Bisa tambah field berkali-kali
 • Setiap field bisa pilih:
   ✅ Default (tanpa box)
-  ⬛ Box Hitam (pakai \`\`\`)
+  ⬛ Box Hitam (pakai \\\`\\\`\\\`)
 
 **📝 CARA PAKAI FIELD:**
 1. Klik **➕ Tambah Field**
 2. Isi nama field, isi field
-3. Pilih **Default** atau **Box Hitam**
+3. Pilih **default** atau **box**
 4. Ulangi untuk field berikutnya
-5. Klik **➖ Hapus Field** untuk hapus field terakhir
 
 **📋 CONTOH FIELD DEFAULT:**
-Nama: Art Commission
-Isi: • Headshot: 30k
-     • Half body: 40k
-     • Full body: 50k
+**Art Commission**
+• Headshot: 30k
+• Half body: 40k
+• Full body: 50k
 
 **⬛ CONTOH FIELD BOX HITAM:**
-Nama: Price List
-Isi: (akan masuk ke dalam box)
-            `);
+**Price List**
+\`\`\`
+• Headshot: 30k
+• Half body: 40k
+• Full body: 50k
+\`\`\`
+            `)
+            .setFooter({ text: '' }); // <-- FOOTER KOSONG biar ga ada "Embed by"
 
         await message.channel.send({ 
             embeds: [infoEmbed], 
@@ -363,10 +367,8 @@ Isi: (akan masuk ke dalam box)
                 if (session.fields && session.fields.length > 0) {
                     for (const field of session.fields) {
                         if (field.useBox) {
-                            // Tampil sebagai box hitam
                             descriptionText += `**${field.name}**\n\`\`\`\n${field.value}\n\`\`\`\n\n`;
                         } else {
-                            // Tampil sebagai field biasa
                             descriptionText += `**${field.name}**\n${field.value}\n\n`;
                         }
                     }
@@ -386,6 +388,8 @@ Isi: (akan masuk ke dalam box)
 
                 if (session.footer) {
                     previewEmbed.setFooter({ text: session.footer });
+                } else {
+                    previewEmbed.setFooter({ text: '' }); // <-- FOOTER KOSONG
                 }
 
                 await interaction.reply({ 
@@ -434,11 +438,12 @@ Isi: (akan masuk ke dalam box)
                 
                 if (session.footer) {
                     finalEmbed.setFooter({ text: session.footer });
+                } else {
+                    finalEmbed.setFooter({ text: '' }); // <-- FOOTER KOSONG
                 }
 
                 await interaction.channel.send({ 
-                    embeds: [finalEmbed],
-                    content: `📢 **Embed dari ${interaction.user.username}**`
+                    embeds: [finalEmbed]
                 });
 
                 client.embedSessions.delete(userId);

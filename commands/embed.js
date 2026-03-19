@@ -1,4 +1,4 @@
-// commands/embed.js - FIELD WITH BLACK BOX OPTION + BUTTON AUTHOR SIMPLE
+// commands/embed.js - FIELD WITH BLACK BOX OPTION + JARAK AUTHOR RAPAT
 const { 
     EmbedBuilder, 
     ActionRowBuilder, 
@@ -51,7 +51,7 @@ module.exports = {
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId('embed_author')
-                    .setLabel('👤 Author') // <-- DIUBAH: simpler, tanpa (Toggle Default)
+                    .setLabel('👤 Author')
                     .setStyle(ButtonStyle.Primary),
                 new ButtonBuilder()
                     .setCustomId('embed_warna')
@@ -102,7 +102,7 @@ module.exports = {
         // INFO EMBED
         const infoEmbed = new EmbedBuilder()
             .setColor('#8B0000')
-            .setTitle('🎨 **EMBED BUILDER - BUTTON AUTHOR SIMPLE**')
+            .setTitle('🎨 **EMBED BUILDER - JARAK AUTHOR RAPAT**')
             .setDescription(`
 Halo <@${message.author.id}>! 
 
@@ -110,10 +110,6 @@ Halo <@${message.author.id}>!
 • Klik **👤 Author** sekali → otomatis aktif dengan:
   **Dreamix Store** + icon default
 • Klik **👤 Author** lagi → author mati
-• Tidak perlu isi manual!
-
-**⏰ TIMESTAMP:**
-• **TIDAK ADA** tanggal/jam di bawah embed
 
 **📝 CARA PAKAI:**
 1. Klik **👤 Author** untuk toggle on/off
@@ -209,7 +205,7 @@ Halo <@${message.author.id}>!
                 await interaction.showModal(modal);
             }
 
-            // AUTHOR BUTTON - TOGGLE DEFAULT (tetap sama fungsinya, hanya label button yang berubah)
+            // AUTHOR BUTTON - TOGGLE DEFAULT
             else if (customId === 'embed_author') {
                 // Data default author
                 const defaultAuthor = {
@@ -371,26 +367,29 @@ Halo <@${message.author.id}>!
                 }
             }
 
-            // PREVIEW BUTTON - TANPA TIMESTAMP
+            // PREVIEW BUTTON - JARAK AUTHOR RAPAT MESKI TANPA JUDUL
             else if (customId === 'embed_preview') {
                 let descriptionText = '';
                 
-                // Judul
+                // AUTHOR OTOMATIS DIATAS - TANPA ENTER EXTRA
+                // (author tidak masuk description, jadi tidak perlu diatur)
+                
+                // Judul - HANYA TAMBAH 1 ENTER
                 if (session.judul) {
-                    descriptionText += `**${session.judul}**\n\n`;
+                    descriptionText += `**${session.judul}**\n`;
                 }
                 
-                // Nama
+                // Nama - HANYA TAMBAH 1 ENTER
                 if (session.nama) {
-                    descriptionText += `*${session.nama}*\n\n`;
+                    descriptionText += `*${session.nama}*\n`;
                 }
                 
-                // Deskripsi
+                // Deskripsi - HANYA TAMBAH 1 ENTER
                 if (session.deskripsi) {
-                    descriptionText += session.deskripsi + '\n\n';
+                    descriptionText += session.deskripsi + '\n';
                 }
                 
-                // Fields (bisa box atau default)
+                // Fields
                 if (session.fields && session.fields.length > 0) {
                     for (const field of session.fields) {
                         if (field.useBox) {
@@ -405,7 +404,7 @@ Halo <@${message.author.id}>!
                     .setColor(session.warna)
                     .setDescription(descriptionText || '​');
 
-                // AUTHOR
+                // AUTHOR - AKAN TAMPIL DI ATAS SENDIRI
                 if (session.author) {
                     if (session.authorIcon?.match(/^https?:\/\//)) {
                         previewEmbed.setAuthor({ 
@@ -435,22 +434,26 @@ Halo <@${message.author.id}>!
                 });
             }
 
-            // KIRIM BUTTON - TANPA TIMESTAMP
+            // KIRIM BUTTON - JARAK AUTHOR RAPAT MESKI TANPA JUDUL
             else if (customId === 'embed_kirim') {
                 let descriptionText = '';
                 
+                // Judul
                 if (session.judul) {
-                    descriptionText += `**${session.judul}**\n\n`;
+                    descriptionText += `**${session.judul}**\n`;
                 }
                 
+                // Nama
                 if (session.nama) {
-                    descriptionText += `*${session.nama}*\n\n`;
+                    descriptionText += `*${session.nama}*\n`;
                 }
                 
+                // Deskripsi
                 if (session.deskripsi) {
-                    descriptionText += session.deskripsi + '\n\n';
+                    descriptionText += session.deskripsi + '\n';
                 }
                 
+                // Fields
                 if (session.fields && session.fields.length > 0) {
                     for (const field of session.fields) {
                         if (field.useBox) {

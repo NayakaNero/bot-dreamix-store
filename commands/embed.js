@@ -1,4 +1,4 @@
-// commands/embed.js - FIELD WITH BLACK BOX OPTION + AUTHOR TOGGLE DEFAULT
+// commands/embed.js - FIELD WITH BLACK BOX OPTION + TANPA TIMESTAMP
 const { 
     EmbedBuilder, 
     ActionRowBuilder, 
@@ -102,7 +102,7 @@ module.exports = {
         // INFO EMBED
         const infoEmbed = new EmbedBuilder()
             .setColor('#8B0000')
-            .setTitle('🎨 **EMBED BUILDER - AUTHOR TOGGLE DEFAULT**')
+            .setTitle('🎨 **EMBED BUILDER - TANPA TIMESTAMP**')
             .setDescription(`
 Halo <@${message.author.id}>! 
 
@@ -112,16 +112,14 @@ Halo <@${message.author.id}>!
 • Klik **👤 Author** lagi → author mati
 • Tidak perlu isi manual!
 
+**⏰ TIMESTAMP:**
+• **TIDAK ADA** tanggal/jam di bawah embed
+
 **📝 CARA PAKAI:**
 1. Klik **👤 Author** untuk toggle on/off
 2. Isi judul, deskripsi, field seperti biasa
 3. Preview untuk lihat hasil
 4. Kirim!
-
-**📋 CONTOH:**
-• Author: Dreamix Store (otomatis)
-• Judul: Anime Art
-• Field: Harga-harga
             `);
 
         await message.channel.send({ 
@@ -211,7 +209,7 @@ Halo <@${message.author.id}>!
                 await interaction.showModal(modal);
             }
 
-            // AUTHOR BUTTON - TOGGLE DEFAULT (FIXED)
+            // AUTHOR BUTTON - TOGGLE DEFAULT
             else if (customId === 'embed_author') {
                 // Data default author
                 const defaultAuthor = {
@@ -373,7 +371,7 @@ Halo <@${message.author.id}>!
                 }
             }
 
-            // PREVIEW BUTTON
+            // PREVIEW BUTTON - TANPA TIMESTAMP
             else if (customId === 'embed_preview') {
                 let descriptionText = '';
                 
@@ -405,8 +403,8 @@ Halo <@${message.author.id}>!
 
                 const previewEmbed = new EmbedBuilder()
                     .setColor(session.warna)
-                    .setDescription(descriptionText || '​')
-                    .setTimestamp();
+                    .setDescription(descriptionText || '​');
+                    // .setTimestamp() - DIHAPUS!
 
                 // AUTHOR
                 if (session.author) {
@@ -438,7 +436,7 @@ Halo <@${message.author.id}>!
                 });
             }
 
-            // KIRIM BUTTON
+            // KIRIM BUTTON - TANPA TIMESTAMP
             else if (customId === 'embed_kirim') {
                 let descriptionText = '';
                 
@@ -466,8 +464,8 @@ Halo <@${message.author.id}>!
 
                 const finalEmbed = new EmbedBuilder()
                     .setColor(session.warna)
-                    .setDescription(descriptionText || '​')
-                    .setTimestamp();
+                    .setDescription(descriptionText || '​');
+                    // .setTimestamp() - DIHAPUS!
 
                 // AUTHOR
                 if (session.author) {
@@ -588,10 +586,8 @@ Halo <@${message.author.id}>!
                     useBox: fieldType === 'box'
                 });
             }
-            // MODAL AUTHOR TIDAK DIPAKAI LAGI, TAPI TETAP DI SINI UNTUK KOMPATIBILITAS
             else if (modalId === 'modal_author') {
                 // Tidak melakukan apa-apa, karena author sekarang pakai toggle
-                // Bisa dihapus atau dibiarkan saja
             }
 
             client.embedSessions.set(userId, session);

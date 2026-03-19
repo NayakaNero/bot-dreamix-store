@@ -1,4 +1,4 @@
-// commands/embed.js - FIELD WITH BLACK BOX OPTION (FIXED VERSION - RAPI & NO FOOTER)
+// commands/embed.js - FIELD WITH BLACK BOX OPTION (FIXED VERSION - NO USER CONTENT)
 const { 
     EmbedBuilder, 
     ActionRowBuilder, 
@@ -125,7 +125,7 @@ Halo <@${message.author.id}>!
 • Full body: 50k
 \`\`\`
             `)
-            .setFooter({ text: '' }); // FOOTER KOSONG biar ga ada "Embed by"
+            .setFooter({ text: '' });
 
         await message.channel.send({ 
             embeds: [infoEmbed], 
@@ -367,9 +367,9 @@ Halo <@${message.author.id}>!
                 if (session.fields && session.fields.length > 0) {
                     for (const field of session.fields) {
                         if (field.useBox) {
-                            descriptionText += `**${field.name}**\n\`\`\`\n${field.value}\n\`\`\`\n\n`;
+                            descriptionText += `**${field.name}**\n\`\`\`\n${field.value}\n\`\`\`\n`;
                         } else {
-                            descriptionText += `**${field.name}**\n${field.value}\n\n`;
+                            descriptionText += `**${field.name}**\n${field.value}\n`;
                         }
                     }
                 }
@@ -389,7 +389,7 @@ Halo <@${message.author.id}>!
                 if (session.footer) {
                     previewEmbed.setFooter({ text: session.footer });
                 } else {
-                    previewEmbed.setFooter({ text: '' }); // FOOTER KOSONG
+                    previewEmbed.setFooter({ text: '' });
                 }
 
                 await interaction.reply({ 
@@ -398,7 +398,7 @@ Halo <@${message.author.id}>!
                 });
             }
 
-            // KIRIM BUTTON
+            // KIRIM BUTTON (TANPA CONTENT USER!)
             else if (customId === 'embed_kirim') {
                 let descriptionText = '';
                 
@@ -417,9 +417,9 @@ Halo <@${message.author.id}>!
                 if (session.fields && session.fields.length > 0) {
                     for (const field of session.fields) {
                         if (field.useBox) {
-                            descriptionText += `**${field.name}**\n\`\`\`\n${field.value}\n\`\`\`\n\n`;
+                            descriptionText += `**${field.name}**\n\`\`\`\n${field.value}\n\`\`\`\n`;
                         } else {
-                            descriptionText += `**${field.name}**\n${field.value}\n\n`;
+                            descriptionText += `**${field.name}**\n${field.value}\n`;
                         }
                     }
                 }
@@ -439,9 +439,10 @@ Halo <@${message.author.id}>!
                 if (session.footer) {
                     finalEmbed.setFooter({ text: session.footer });
                 } else {
-                    finalEmbed.setFooter({ text: '' }); // FOOTER KOSONG
+                    finalEmbed.setFooter({ text: '' });
                 }
 
+                // KIRIM EMBED TANPA CONTENT - TIDAK ADA "📢 Embed dari ..."
                 await interaction.channel.send({ 
                     embeds: [finalEmbed]
                 });

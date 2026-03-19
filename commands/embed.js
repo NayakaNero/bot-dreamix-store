@@ -235,7 +235,7 @@ Halo <@${message.author.id}>!
                 }
             }
 
-            // WARNA BUTTON
+            // WARNA BUTTON - INI YANG DIPANGGIL
             else if (customId === 'embed_warna') {
                 const modal = new ModalBuilder()
                     .setCustomId('modal_warna')
@@ -245,9 +245,9 @@ Halo <@${message.author.id}>!
                     .setCustomId('warna')
                     .setLabel('Warna (HEX atau nama)')
                     .setStyle(TextInputStyle.Short)
-                    .setPlaceholder('#8d2dfb atau UNGU') // <-- DIUBAH JADI UNGU
+                    .setPlaceholder('#8d2dfb atau UNGU') // <-- UBAH PLACEHOLDER
                     .setRequired(false)
-                    .setValue(session.warna);
+                    .setValue('#8d2dfb'); // <-- INI YANG DITAMPILIN DI MODAL (DEFAULT VALUE)
 
                 const row = new ActionRowBuilder().addComponents(warnaInput);
                 modal.addComponents(row);

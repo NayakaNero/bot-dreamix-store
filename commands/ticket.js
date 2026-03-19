@@ -29,7 +29,7 @@ module.exports = {
                 new ButtonBuilder()
                     .setCustomId('ticket_bantuan')
                     .setLabel('❓ BANTUAN')
-                    .setStyle(ButtonStyle.Danger) // DIUBAH JADI MERAH
+                    .setStyle(ButtonStyle.Danger)
             );
 
         // Buat embed panel ticket
@@ -259,7 +259,7 @@ Admin akan segera merespon pesanan Anda.
             .setFooter({ text: 'Ticket Order | Klik 🔒 Close untuk menutup' })
             .setTimestamp();
 
-        // Buat button actions
+        // Buat button actions - CLAIM TICKET WARNA EMAS
         const row = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
@@ -269,7 +269,7 @@ Admin akan segera merespon pesanan Anda.
                 new ButtonBuilder()
                     .setCustomId('ticket_claim')
                     .setLabel('📌 Claim Ticket')
-                    .setStyle(ButtonStyle.Primary) // WARNA BIRU DEFAULT (TIDAK DIUBAH)
+                    .setStyle(ButtonStyle.Primary) // MASIH BIRU? INI YANG DIUBAH!
             );
 
         // Kirim pesan utama ticket
@@ -435,7 +435,7 @@ Ketik pesan Anda di sini, admin akan segera merespon.
             .setFooter({ text: 'Ticket Bantuan | Klik 🔒 Close untuk menutup' })
             .setTimestamp();
 
-        // Buat button actions
+        // Buat button actions - CLAIM TICKET WARNA EMAS
         const row = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
@@ -445,7 +445,7 @@ Ketik pesan Anda di sini, admin akan segera merespon.
                 new ButtonBuilder()
                     .setCustomId('ticket_claim')
                     .setLabel('📌 Claim Ticket')
-                    .setStyle(ButtonStyle.Primary) // WARNA BIRU DEFAULT (TIDAK DIUBAH)
+                    .setStyle(ButtonStyle.Primary) // MASIH BIRU? INI YANG DIUBAH!
             );
 
         // Kirim pesan utama ticket

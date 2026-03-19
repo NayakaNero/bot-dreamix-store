@@ -1,4 +1,4 @@
-// index.js - FINAL VERSION (with admin filter)
+// index.js - FINAL VERSION (with admin filter, NO auto-response)
 require('dotenv').config();
 const { Client, GatewayIntentBits, Collection, PermissionsBitField } = require('discord.js');
 const fs = require('fs');
@@ -17,7 +17,7 @@ client.commands = new Collection();
 client.embedSessions = new Map(); // Untuk session embed
 
 // ===== TAMBAHAN UNTUK FITUR TOKO =====
-client.tokoStatus = 'buka'; // Default toko tutup
+client.tokoStatus = 'buka'; // Default toko buka
 client.tokoBukaSejak = null;
 client.jamOperasional = {
     'Senin-Jumat': '12.00 - 22.00',

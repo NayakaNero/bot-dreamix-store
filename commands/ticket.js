@@ -24,7 +24,7 @@ module.exports = {
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId('ticket_order')
-                    .setLabel('🛒 ORDER')
+                    .setLabel('💰 ORDER')
                     .setStyle(ButtonStyle.Success),
                 new ButtonBuilder()
                     .setCustomId('ticket_bantuan')
@@ -40,7 +40,7 @@ module.exports = {
 Butuh bantuan atau ingin order sesuatu?
 
 Klik tombol dibawah untuk membuat ticket:
-- 🛒 **ORDER** - Untuk order (akan muncul di **bawah chat**)
+- 💰 **ORDER** - Untuk order (akan muncul di **bawah chat**)
 - ❓ **BANTUAN** - Untuk bertanya (akan dibuat channel khusus)
 
 **Support system**

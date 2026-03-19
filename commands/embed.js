@@ -1,4 +1,4 @@
-// commands/embed.js - FIELD WITH BLACK BOX OPTION + JARAK AUTHOR DENGAN GAMBAR
+// commands/embed.js - FIELD WITH BLACK BOX OPTION + JARAK DEFAULT
 const { 
     EmbedBuilder, 
     ActionRowBuilder, 
@@ -21,7 +21,7 @@ module.exports = {
             judul: null,
             nama: null,
             deskripsi: null,
-            warna: '#8d2dfb', // <-- DIUBAH JADI UNGU
+            warna: '#8d2dfb',
             footer: null,
             gambar: null,
             thumbnail: null,
@@ -101,8 +101,8 @@ module.exports = {
 
         // INFO EMBED
         const infoEmbed = new EmbedBuilder()
-            .setColor('#8d2dfb') // <-- DIUBAH JADI UNGU
-            .setTitle('🎨 **EMBED BUILDER - JARAK AUTHOR & GAMBAR**')
+            .setColor('#8d2dfb')
+            .setTitle('🎨 **EMBED BUILDER - JARAK DEFAULT**')
             .setDescription(`
 Halo <@${message.author.id}>! 
 
@@ -133,7 +133,7 @@ Halo <@${message.author.id}>!
             judul: null,
             nama: null,
             deskripsi: null,
-            warna: '#8d2dfb', // <-- DIUBAH JADI UNGU
+            warna: '#8d2dfb',
             footer: null,
             gambar: null,
             thumbnail: null,
@@ -235,7 +235,7 @@ Halo <@${message.author.id}>!
                 }
             }
 
-            // WARNA BUTTON - INI YANG DIPANGGIL
+            // WARNA BUTTON
             else if (customId === 'embed_warna') {
                 const modal = new ModalBuilder()
                     .setCustomId('modal_warna')
@@ -245,9 +245,9 @@ Halo <@${message.author.id}>!
                     .setCustomId('warna')
                     .setLabel('Warna (HEX atau nama)')
                     .setStyle(TextInputStyle.Short)
-                    .setPlaceholder('#8d2dfb atau UNGU') // <-- UBAH PLACEHOLDER
+                    .setPlaceholder('#8d2dfb atau UNGU')
                     .setRequired(false)
-                    .setValue('#8d2dfb'); // <-- INI YANG DITAMPILIN DI MODAL (DEFAULT VALUE)
+                    .setValue('#8d2dfb');
 
                 const row = new ActionRowBuilder().addComponents(warnaInput);
                 modal.addComponents(row);
@@ -367,32 +367,32 @@ Halo <@${message.author.id}>!
                 }
             }
 
-            // PREVIEW BUTTON
+            // PREVIEW BUTTON - JARAK DEFAULT (KAYAK FOTO)
             else if (customId === 'embed_preview') {
                 let descriptionText = '';
                 
                 // Judul
                 if (session.judul) {
-                    descriptionText += `**${session.judul}**\n`;
+                    descriptionText += `**${session.judul}**\n\n`; // <-- PAKAI \n\n
                 }
                 
                 // Nama
                 if (session.nama) {
-                    descriptionText += `*${session.nama}*\n`;
+                    descriptionText += `*${session.nama}*\n\n`; // <-- PAKAI \n\n
                 }
                 
                 // Deskripsi
                 if (session.deskripsi) {
-                    descriptionText += session.deskripsi + '\n';
+                    descriptionText += session.deskripsi + '\n\n'; // <-- PAKAI \n\n
                 }
                 
                 // Fields
                 if (session.fields && session.fields.length > 0) {
                     for (const field of session.fields) {
                         if (field.useBox) {
-                            descriptionText += `**${field.name}**\n\`\`\`\n${field.value}\n\`\`\`\n`;
+                            descriptionText += `**${field.name}**\n\`\`\`\n${field.value}\n\`\`\`\n\n`; // <-- PAKAI \n\n
                         } else {
-                            descriptionText += `**${field.name}**\n${field.value}\n`;
+                            descriptionText += `**${field.name}**\n${field.value}\n\n`; // <-- PAKAI \n\n
                         }
                     }
                 }
@@ -413,7 +413,7 @@ Halo <@${message.author.id}>!
                     }
                 }
 
-                // GAMBAR - AKAN MUNCUL DI BAWAH DESCRIPTION
+                // GAMBAR
                 if (session.gambar?.match(/^https?:\/\//)) {
                     previewEmbed.setImage(session.gambar);
                 }
@@ -432,32 +432,32 @@ Halo <@${message.author.id}>!
                 });
             }
 
-            // KIRIM BUTTON
+            // KIRIM BUTTON - JARAK DEFAULT (KAYAK FOTO)
             else if (customId === 'embed_kirim') {
                 let descriptionText = '';
                 
                 // Judul
                 if (session.judul) {
-                    descriptionText += `**${session.judul}**\n`;
+                    descriptionText += `**${session.judul}**\n\n`; // <-- PAKAI \n\n
                 }
                 
                 // Nama
                 if (session.nama) {
-                    descriptionText += `*${session.nama}*\n`;
+                    descriptionText += `*${session.nama}*\n\n`; // <-- PAKAI \n\n
                 }
                 
                 // Deskripsi
                 if (session.deskripsi) {
-                    descriptionText += session.deskripsi + '\n';
+                    descriptionText += session.deskripsi + '\n\n'; // <-- PAKAI \n\n
                 }
                 
                 // Fields
                 if (session.fields && session.fields.length > 0) {
                     for (const field of session.fields) {
                         if (field.useBox) {
-                            descriptionText += `**${field.name}**\n\`\`\`\n${field.value}\n\`\`\`\n`;
+                            descriptionText += `**${field.name}**\n\`\`\`\n${field.value}\n\`\`\`\n\n`; // <-- PAKAI \n\n
                         } else {
-                            descriptionText += `**${field.name}**\n${field.value}\n`;
+                            descriptionText += `**${field.name}**\n${field.value}\n\n`; // <-- PAKAI \n\n
                         }
                     }
                 }
@@ -478,7 +478,7 @@ Halo <@${message.author.id}>!
                     }
                 }
 
-                // GAMBAR - AKAN MUNCUL DI BAWAH DESCRIPTION
+                // GAMBAR
                 if (session.gambar?.match(/^https?:\/\//)) {
                     finalEmbed.setImage(session.gambar);
                 }
@@ -527,7 +527,7 @@ Halo <@${message.author.id}>!
             judul: null,
             nama: null,
             deskripsi: null,
-            warna: '#8d2dfb', // <-- DIUBAH JADI UNGU
+            warna: '#8d2dfb',
             footer: null,
             gambar: null,
             thumbnail: null,
@@ -549,7 +549,7 @@ Halo <@${message.author.id}>!
                 session.deskripsi = interaction.fields.getTextInputValue('deskripsi');
             }
             else if (modalId === 'modal_warna') {
-                let warna = interaction.fields.getTextInputValue('warna') || '#8d2dfb'; // <-- DIUBAH JADI UNGU
+                let warna = interaction.fields.getTextInputValue('warna') || '#8d2dfb';
                 
                 const warnaMap = {
                     'red': '#FF0000', 'blue': '#0000FF', 'green': '#00FF00',

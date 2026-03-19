@@ -1,4 +1,4 @@
-// commands/embed.js - FIELD WITH BLACK BOX OPTION (FIXED VERSION - NO USER CONTENT)
+// commands/embed.js - FIELD WITH BLACK BOX OPTION (FIXED VERSION - NO EMPTY FOOTER)
 const { 
     EmbedBuilder, 
     ActionRowBuilder, 
@@ -93,6 +93,7 @@ module.exports = {
                     .setStyle(ButtonStyle.Secondary)
             );
 
+        // INFO EMBED - TANPA .setFooter (FIXED)
         const infoEmbed = new EmbedBuilder()
             .setColor('#8B0000')
             .setTitle('🎨 **EMBED BUILDER - FIELD & BOX**')
@@ -124,8 +125,8 @@ Halo <@${message.author.id}>!
 • Half body: 40k
 • Full body: 50k
 \`\`\`
-            `)
-            .setFooter({ text: '' });
+            `);
+            // .setFooter({ text: '' }) TIDAK DIPAKAI
 
         await message.channel.send({ 
             embeds: [infoEmbed], 
@@ -344,7 +345,7 @@ Halo <@${message.author.id}>!
                 }
             }
 
-            // PREVIEW BUTTON
+            // PREVIEW BUTTON - FIXED (TANPA ELSE EMPTY FOOTER)
             else if (customId === 'embed_preview') {
                 let descriptionText = '';
                 
@@ -386,10 +387,9 @@ Halo <@${message.author.id}>!
                     previewEmbed.setThumbnail(session.thumbnail);
                 }
 
+                // FOOTER - HANYA JIKA ADA, TANPA ELSE EMPTY
                 if (session.footer) {
                     previewEmbed.setFooter({ text: session.footer });
-                } else {
-                    previewEmbed.setFooter({ text: '' });
                 }
 
                 await interaction.reply({ 
@@ -398,7 +398,7 @@ Halo <@${message.author.id}>!
                 });
             }
 
-            // KIRIM BUTTON (TANPA CONTENT USER!)
+            // KIRIM BUTTON - FIXED (TANPA ELSE EMPTY FOOTER & TANPA CONTENT USER)
             else if (customId === 'embed_kirim') {
                 let descriptionText = '';
                 
@@ -436,13 +436,12 @@ Halo <@${message.author.id}>!
                     finalEmbed.setThumbnail(session.thumbnail);
                 }
                 
+                // FOOTER - HANYA JIKA ADA, TANPA ELSE EMPTY
                 if (session.footer) {
                     finalEmbed.setFooter({ text: session.footer });
-                } else {
-                    finalEmbed.setFooter({ text: '' });
                 }
 
-                // KIRIM EMBED TANPA CONTENT - TIDAK ADA "📢 Embed dari ..."
+                // KIRIM TANPA CONTENT USER
                 await interaction.channel.send({ 
                     embeds: [finalEmbed]
                 });

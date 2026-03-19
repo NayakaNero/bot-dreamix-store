@@ -1,4 +1,4 @@
-// commands/embed.js - FIELD WITH BLACK BOX OPTION + AUTHOR FITUR
+// commands/embed.js - FIELD WITH BLACK BOX OPTION + CARL-BOT STYLE (NAMA BOT + APP LABEL)
 const { 
     EmbedBuilder, 
     ActionRowBuilder, 
@@ -25,8 +25,8 @@ module.exports = {
             footer: null,
             gambar: null,
             thumbnail: null,
-            author: null, // <-- TAMBAHAN AUTHOR
-            authorIcon: null, // <-- TAMBAHAN ICON AUTHOR
+            author: null,
+            authorIcon: null,
             fields: [] // [{ name: '...', value: '...', inline: false, useBox: false }]
         });
 
@@ -50,8 +50,8 @@ module.exports = {
         const row2 = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId('embed_author') // <-- BUTTON AUTHOR BARU
-                    .setLabel('👤 Author')
+                    .setCustomId('embed_author')
+                    .setLabel('👤 Author (Carl-bot style)')
                     .setStyle(ButtonStyle.Primary),
                 new ButtonBuilder()
                     .setCustomId('embed_warna')
@@ -102,39 +102,27 @@ module.exports = {
         // INFO EMBED
         const infoEmbed = new EmbedBuilder()
             .setColor('#8B0000')
-            .setTitle('🎨 **EMBED BUILDER - FIELD & BOX + AUTHOR**')
+            .setTitle('🎨 **EMBED BUILDER - CARL-BOT STYLE**')
             .setDescription(`
 Halo <@${message.author.id}>! 
 
-**✨ FITUR BARU: AUTHOR**
-• Klik button **👤 Author** untuk set author
-• Bisa tambah nama author dan icon URL
+**✨ FITUR CARL-BOT:**
+• **Author** otomatis tampil di atas (seperti Carl-bot)
+• **Timestamp** otomatis muncul di kanan
+• Bisa set nama author dan icon
 
-**✨ FITUR FIELD:**
-• Bisa tambah field berkali-kali
-• Setiap field bisa pilih:
-  ✅ Default (tanpa box)
-  ⬛ Box Hitam (pakai \\\`\\\`\\\`)
+**📝 CARA PAKAI:**
+1. Klik **👤 Author** untuk set nama (contoh: Dreamix Store)
+2. Isi judul, deskripsi, field seperti biasa
+3. Preview untuk lihat hasil
+4. Kirim!
 
-**📝 CARA PAKAI FIELD:**
-1. Klik **➕ Tambah Field**
-2. Isi nama field, isi field
-3. Pilih **default** atau **box**
-4. Ulangi untuk field berikutnya
+**📋 CONTOH:**
+• Author: Dreamix Store
+• Judul: Anime Art
+• Field: Harga-harga
 
-**📋 CONTOH FIELD DEFAULT:**
-**Art Commission**
-• Headshot: 30k
-• Half body: 40k
-• Full body: 50k
-
-**⬛ CONTOH FIELD BOX HITAM:**
-**Price List**
-\`\`\`
-• Headshot: 30k
-• Half body: 40k
-• Full body: 50k
-\`\`\`
+Hasilnya akan seperti Carl-bot!
             `);
 
         await message.channel.send({ 
@@ -224,18 +212,18 @@ Halo <@${message.author.id}>!
                 await interaction.showModal(modal);
             }
 
-            // AUTHOR BUTTON (BARU!)
+            // AUTHOR BUTTON
             else if (customId === 'embed_author') {
                 const modal = new ModalBuilder()
                     .setCustomId('modal_author')
-                    .setTitle('👤 Author');
+                    .setTitle('👤 Author (Carl-bot style)');
 
                 const authorNameInput = new TextInputBuilder()
                     .setCustomId('author_name')
-                    .setLabel('Nama Author')
+                    .setLabel('Nama Author (contoh: Dreamix Store)')
                     .setStyle(TextInputStyle.Short)
-                    .setPlaceholder('Contoh: Dreamix Store')
-                    .setRequired(false)
+                    .setPlaceholder('Dreamix Store')
+                    .setRequired(true)
                     .setMaxLength(256)
                     .setValue(session.author || '');
 
@@ -418,9 +406,10 @@ Halo <@${message.author.id}>!
 
                 const previewEmbed = new EmbedBuilder()
                     .setColor(session.warna)
-                    .setDescription(descriptionText || '​');
+                    .setDescription(descriptionText || '​')
+                    .setTimestamp(); // <-- TIMESTAMP OTOMATIS (Carl-bot style)
 
-                // AUTHOR (BARU!)
+                // AUTHOR
                 if (session.author) {
                     if (session.authorIcon?.match(/^https?:\/\//)) {
                         previewEmbed.setAuthor({ 
@@ -478,9 +467,10 @@ Halo <@${message.author.id}>!
 
                 const finalEmbed = new EmbedBuilder()
                     .setColor(session.warna)
-                    .setDescription(descriptionText || '​');
+                    .setDescription(descriptionText || '​')
+                    .setTimestamp(); // <-- TIMESTAMP OTOMATIS (Carl-bot style)
 
-                // AUTHOR (BARU!)
+                // AUTHOR
                 if (session.author) {
                     if (session.authorIcon?.match(/^https?:\/\//)) {
                         finalEmbed.setAuthor({ 
@@ -561,7 +551,7 @@ Halo <@${message.author.id}>!
             else if (modalId === 'modal_deskripsi') {
                 session.deskripsi = interaction.fields.getTextInputValue('deskripsi');
             }
-            else if (modalId === 'modal_author') { // <-- MODAL AUTHOR BARU
+            else if (modalId === 'modal_author') {
                 session.author = interaction.fields.getTextInputValue('author_name');
                 session.authorIcon = interaction.fields.getTextInputValue('author_icon');
             }

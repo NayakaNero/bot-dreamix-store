@@ -1,4 +1,4 @@
-// commands/embed.js - FIELD WITH BLACK BOX OPTION + JARAK AUTHOR FINAL
+// commands/embed.js - FIELD WITH BLACK BOX OPTION + JARAK AUTHOR DENGAN GAMBAR
 const { 
     EmbedBuilder, 
     ActionRowBuilder, 
@@ -102,7 +102,7 @@ module.exports = {
         // INFO EMBED
         const infoEmbed = new EmbedBuilder()
             .setColor('#8B0000')
-            .setTitle('🎨 **EMBED BUILDER - JARAK AUTHOR FINAL**')
+            .setTitle('🎨 **EMBED BUILDER - JARAK AUTHOR & GAMBAR**')
             .setDescription(`
 Halo <@${message.author.id}>! 
 
@@ -367,35 +367,23 @@ Halo <@${message.author.id}>!
                 }
             }
 
-            // PREVIEW BUTTON - JARAK AUTHOR 0 KALAU TANPA JUDUL
+            // PREVIEW BUTTON
             else if (customId === 'embed_preview') {
                 let descriptionText = '';
                 
-                // KALAU ADA JUDUL
+                // Judul
                 if (session.judul) {
                     descriptionText += `**${session.judul}**\n`;
-                    
-                    // KALAU ADA NAMA SETELAH JUDUL
-                    if (session.nama) {
-                        descriptionText += `*${session.nama}*\n`;
-                    }
-                    
-                    // KALAU ADA DESKRIPSI SETELAH JUDUL
-                    if (session.deskripsi) {
-                        descriptionText += session.deskripsi + '\n';
-                    }
-                } 
-                // KALAU TIDAK ADA JUDUL
-                else {
-                    // LANGSUNG NAMA (TANPA ENTER SEBELUMNYA)
-                    if (session.nama) {
-                        descriptionText += `*${session.nama}*\n`;
-                    }
-                    
-                    // LANGSUNG DESKRIPSI (TANPA ENTER SEBELUMNYA)
-                    if (session.deskripsi) {
-                        descriptionText += session.deskripsi + '\n';
-                    }
+                }
+                
+                // Nama
+                if (session.nama) {
+                    descriptionText += `*${session.nama}*\n`;
+                }
+                
+                // Deskripsi
+                if (session.deskripsi) {
+                    descriptionText += session.deskripsi + '\n';
                 }
                 
                 // Fields
@@ -425,6 +413,7 @@ Halo <@${message.author.id}>!
                     }
                 }
 
+                // GAMBAR - AKAN MUNCUL DI BAWAH DESCRIPTION
                 if (session.gambar?.match(/^https?:\/\//)) {
                     previewEmbed.setImage(session.gambar);
                 }
@@ -443,35 +432,23 @@ Halo <@${message.author.id}>!
                 });
             }
 
-            // KIRIM BUTTON - JARAK AUTHOR 0 KALAU TANPA JUDUL
+            // KIRIM BUTTON
             else if (customId === 'embed_kirim') {
                 let descriptionText = '';
                 
-                // KALAU ADA JUDUL
+                // Judul
                 if (session.judul) {
                     descriptionText += `**${session.judul}**\n`;
-                    
-                    // KALAU ADA NAMA SETELAH JUDUL
-                    if (session.nama) {
-                        descriptionText += `*${session.nama}*\n`;
-                    }
-                    
-                    // KALAU ADA DESKRIPSI SETELAH JUDUL
-                    if (session.deskripsi) {
-                        descriptionText += session.deskripsi + '\n';
-                    }
-                } 
-                // KALAU TIDAK ADA JUDUL
-                else {
-                    // LANGSUNG NAMA (TANPA ENTER SEBELUMNYA)
-                    if (session.nama) {
-                        descriptionText += `*${session.nama}*\n`;
-                    }
-                    
-                    // LANGSUNG DESKRIPSI (TANPA ENTER SEBELUMNYA)
-                    if (session.deskripsi) {
-                        descriptionText += session.deskripsi + '\n';
-                    }
+                }
+                
+                // Nama
+                if (session.nama) {
+                    descriptionText += `*${session.nama}*\n`;
+                }
+                
+                // Deskripsi
+                if (session.deskripsi) {
+                    descriptionText += session.deskripsi + '\n';
                 }
                 
                 // Fields
@@ -501,6 +478,7 @@ Halo <@${message.author.id}>!
                     }
                 }
 
+                // GAMBAR - AKAN MUNCUL DI BAWAH DESCRIPTION
                 if (session.gambar?.match(/^https?:\/\//)) {
                     finalEmbed.setImage(session.gambar);
                 }

@@ -1,4 +1,4 @@
-// commands/ticket.js - FINAL FIX (Order = Thread, Bantuan = Channel)
+// commands/ticket.js - FINAL FIX (Order = Thread, Bantuan = Channel) + FIX CLOSE
 const { 
     EmbedBuilder, 
     ActionRowBuilder, 
@@ -19,7 +19,7 @@ module.exports = {
             return message.reply('❌ Hanya admin yang bisa menggunakan command ini!');
         }
 
-        // Buat button ORDER (hijau) dan BANTUAN (biru) - IKON DIUBAH
+        // Buat button ORDER (hijau) dan BANTUAN (biru)
         const row = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
@@ -74,10 +74,13 @@ Klik tombol dibawah untuk membuat ticket:
 
             // ===== TOMBOL CLOSE TICKET =====
             else if (customId === 'ticket_close') {
-                // Cek apakah ini channel ticket
-                if (!interaction.channel.name.startsWith('ticket-') && !interaction.channel.name.startsWith('bantuan-')) {
+                // CEK APAKAH INI THREAD ATAU CHANNEL TICKET
+                const isOrderThread = interaction.channel.isThread?.() && interaction.channel.name.startsWith('order-');
+                const isBantuanChannel = interaction.channel.name?.startsWith('bantuan-');
+                
+                if (!isOrderThread && !isBantuanChannel) {
                     return interaction.reply({ 
-                        content: '❌ Ini bukan channel ticket!', 
+                        content: '❌ Ini bukan channel/thread ticket!', 
                         ephemeral: true 
                     });
                 }
@@ -110,8 +113,15 @@ Klik tombol dibawah untuk membuat ticket:
             else if (customId === 'ticket_close_confirm') {
                 const channel = interaction.channel;
                 
-                // Langsung hapus channel tanpa pesan
-                await channel.delete().catch(() => {});
+                // CEK JENIS: THREAD ATAU CHANNEL
+                if (channel.isThread?.()) {
+                    // Untuk thread: archive dulu baru delete
+                    await channel.setArchived(true).catch(() => {});
+                    await channel.delete().catch(() => {});
+                } else {
+                    // Untuk channel biasa
+                    await channel.delete().catch(() => {});
+                }
             }
 
             // ===== BATAL CLOSE =====

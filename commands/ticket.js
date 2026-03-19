@@ -19,7 +19,7 @@ module.exports = {
             return message.reply('❌ Hanya admin yang bisa menggunakan command ini!');
         }
 
-        // Buat button ORDER (hijau) dan BANTUAN (biru)
+        // Buat button ORDER (hijau) dan BANTUAN (MERAH)
         const row = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
@@ -29,7 +29,7 @@ module.exports = {
                 new ButtonBuilder()
                     .setCustomId('ticket_bantuan')
                     .setLabel('❓ BANTUAN')
-                    .setStyle(ButtonStyle.Primary)
+                    .setStyle(ButtonStyle.Danger) // DIUBAH JADI MERAH
             );
 
         // Buat embed panel ticket
@@ -132,7 +132,7 @@ Klik tombol dibawah untuk membuat ticket:
                 });
             }
 
-            // ===== CLAIM TICKET =====
+            // ===== CLAIM TICKET (WARNA EMAS) =====
             else if (customId === 'ticket_claim') {
                 // Cek apakah user adalah staff (punya permission manage channels)
                 if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
@@ -269,7 +269,7 @@ Admin akan segera merespon pesanan Anda.
                 new ButtonBuilder()
                     .setCustomId('ticket_claim')
                     .setLabel('📌 Claim Ticket')
-                    .setStyle(ButtonStyle.Primary)
+                    .setStyle(ButtonStyle.Primary) // WARNA BIRU DEFAULT (TIDAK DIUBAH)
             );
 
         // Kirim pesan utama ticket
@@ -445,7 +445,7 @@ Ketik pesan Anda di sini, admin akan segera merespon.
                 new ButtonBuilder()
                     .setCustomId('ticket_claim')
                     .setLabel('📌 Claim Ticket')
-                    .setStyle(ButtonStyle.Primary)
+                    .setStyle(ButtonStyle.Primary) // WARNA BIRU DEFAULT (TIDAK DIUBAH)
             );
 
         // Kirim pesan utama ticket

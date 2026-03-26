@@ -1,4 +1,4 @@
-// commands/ticket.js - FINAL FIX (Order = Thread, Bantuan = Channel) + FIX CLOSE
+// commands/ticket.js - FINAL FIX (Order = Thread, Bantuan = Channel) + ADMIN PERMISSION
 const { 
     EmbedBuilder, 
     ActionRowBuilder, 
@@ -132,7 +132,7 @@ Klik tombol dibawah untuk membuat ticket:
                 });
             }
 
-            // ===== CLAIM TICKET (WARNA EMAS) =====
+            // ===== CLAIM TICKET =====
             else if (customId === 'ticket_claim') {
                 // Cek apakah user adalah staff (punya permission manage channels)
                 if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
@@ -170,6 +170,7 @@ async function buatTicketOrder(interaction, client) {
     try {
         const user = interaction.user;
         const channel = interaction.channel;
+        const guild = interaction.guild;
 
         // Cek apakah user sudah punya thread order aktif
         const existingThread = channel.threads.cache.find(
@@ -193,6 +194,19 @@ async function buatTicketOrder(interaction, client) {
 
         // Add user ke thread
         await thread.members.add(user.id);
+
+        // ===== TAMBAH PERMISSION UNTUK ROLE ADMIN =====
+        // Cari role Admin
+        const adminRole = guild.roles.cache.find(r => r.name === 'Admin');
+        if (adminRole) {
+            await thread.members.add(adminRole.id);
+        }
+        
+        // Cari role Moderator (opsional)
+        const modRole = guild.roles.cache.find(r => r.name === 'Moderator');
+        if (modRole) {
+            await thread.members.add(modRole.id);
+        }
 
         // ===== CEK STATUS TOKO - HANYA KIRIM JIKA TUTUP =====
         const tokoCommand = client.commands.get('toko');
@@ -259,7 +273,7 @@ Admin akan segera merespon pesanan Anda.
             .setFooter({ text: 'Ticket Order | Klik 🔒 Close untuk menutup' })
             .setTimestamp();
 
-        // Buat button actions - CLAIM TICKET WARNA EMAS
+        // Buat button actions
         const row = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
@@ -269,7 +283,7 @@ Admin akan segera merespon pesanan Anda.
                 new ButtonBuilder()
                     .setCustomId('ticket_claim')
                     .setLabel('📌 Claim Ticket')
-                    .setStyle(ButtonStyle.Primary) // MASIH BIRU? INI YANG DIUBAH!
+                    .setStyle(ButtonStyle.Secondary)
             );
 
         // Kirim pesan utama ticket
@@ -331,6 +345,9 @@ async function buatTicketBantuan(interaction, client) {
             });
         }
 
+        // Cari role Admin
+        const adminRole = guild.roles.cache.find(r => r.name === 'Admin');
+        
         // Buat channel ticket baru
         const ticketChannel = await guild.channels.create({
             name: `bantuan-${user.username.toLowerCase()}`,
@@ -360,8 +377,17 @@ async function buatTicketBantuan(interaction, client) {
             ]
         });
 
-        // Role staff yang bisa melihat ticket
-        const staffRoles = ['Admin', 'Moderator', 'Support'];
+        // ===== TAMBAHKAN PERMISSION UNTUK ROLE ADMIN =====
+        if (adminRole) {
+            await ticketChannel.permissionOverwrites.create(adminRole, {
+                ViewChannel: true,
+                SendMessages: true,
+                ReadMessageHistory: true
+            });
+        }
+
+        // Role staff lain yang bisa melihat ticket
+        const staffRoles = ['Moderator', 'Support'];
         for (const roleName of staffRoles) {
             const role = guild.roles.cache.find(r => r.name === roleName);
             if (role) {
@@ -435,7 +461,7 @@ Ketik pesan Anda di sini, admin akan segera merespon.
             .setFooter({ text: 'Ticket Bantuan | Klik 🔒 Close untuk menutup' })
             .setTimestamp();
 
-        // Buat button actions - CLAIM TICKET WARNA EMAS
+        // Buat button actions
         const row = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
@@ -445,7 +471,7 @@ Ketik pesan Anda di sini, admin akan segera merespon.
                 new ButtonBuilder()
                     .setCustomId('ticket_claim')
                     .setLabel('📌 Claim Ticket')
-                    .setStyle(ButtonStyle.Primary) // MASIH BIRU? INI YANG DIUBAH!
+                    .setStyle(ButtonStyle.Secondary)
             );
 
         // Kirim pesan utama ticket

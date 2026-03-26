@@ -1,4 +1,4 @@
-// commands/ticket.js - Ticket King Style (Full Copy)
+// commands/ticket.js - Ticket King Style (Dreamix Store, Ikon & Teks Tetap)
 const { 
     EmbedBuilder, 
     ActionRowBuilder, 
@@ -10,7 +10,7 @@ const {
 
 module.exports = {
     name: 'ticket',
-    description: 'Membuat panel ticket ala Ticket King',
+    description: 'Membuat panel ticket bantuan & order',
     
     async execute(message, args, client) {
         
@@ -19,20 +19,20 @@ module.exports = {
             return message.reply('❌ Hanya admin yang bisa menggunakan command ini!');
         }
 
-        // Buat button ORDER dan BANTUAN (tanpa ikon, hanya teks seperti Ticket King)
+        // Buat button ORDER (hijau) dan BANTUAN (MERAH) - IKON TETAP
         const row = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId('ticket_order')
-                    .setLabel('Order')
+                    .setLabel('💰 ORDER')
                     .setStyle(ButtonStyle.Success),
                 new ButtonBuilder()
                     .setCustomId('ticket_bantuan')
-                    .setLabel('Bantuan')
-                    .setStyle(ButtonStyle.Primary)
+                    .setLabel('❓ BANTUAN')
+                    .setStyle(ButtonStyle.Danger)
             );
 
-        // Buat embed panel ticket - mirip Ticket King
+        // Buat embed panel ticket - style Ticket King
         const ticketEmbed = new EmbedBuilder()
             .setColor('#2b2d31')
             .setTitle('Help & Order')
@@ -40,12 +40,12 @@ module.exports = {
 Butuh bantuan atau ingin order sesuatu?
 
 Klik tombol dibawah untuk membuat ticket:
-- 🟢 Untuk order layanan
-- 🔵 Untuk bertanya / meminta bantuan
+- 💰 **ORDER** - Untuk order (akan muncul di **bawah chat**)
+- ❓ **BANTUAN** - Untuk bertanya (akan dibuat channel khusus)
 
-**Support system**
+**Dreamix Store**
             `)
-            .setFooter({ text: 'Ticket King', iconURL: 'https://cdn.discordapp.com/embed/avatars/0.png' })
+            .setFooter({ text: 'Dreamix Store', iconURL: 'https://cdn.discordapp.com/embed/avatars/0.png' })
             .setTimestamp();
 
         // Kirim panel ticket
@@ -62,18 +62,19 @@ Klik tombol dibawah untuk membuat ticket:
         const customId = interaction.customId;
 
         try {
-            // ===== TOMBOL ORDER =====
+            // ===== TOMBOL ORDER (THREAD - DI BAWAH CHAT) =====
             if (customId === 'ticket_order') {
-                await buatTicket(interaction, client, '🐍 Order');
+                await buatTicketOrder(interaction, client);
             }
             
-            // ===== TOMBOL BANTUAN =====
+            // ===== TOMBOL BANTUAN (CHANNEL) =====
             else if (customId === 'ticket_bantuan') {
-                await buatTicket(interaction, client, '🔵 Bantuan');
+                await buatTicketBantuan(interaction, client);
             }
 
             // ===== TOMBOL CLOSE TICKET =====
             else if (customId === 'ticket_close') {
+                // CEK APAKAH INI THREAD ATAU CHANNEL TICKET
                 const isOrderThread = interaction.channel.isThread?.() && interaction.channel.name.startsWith('order-');
                 const isBantuanChannel = interaction.channel.name?.startsWith('bantuan-');
                 
@@ -84,6 +85,7 @@ Klik tombol dibawah untuk membuat ticket:
                     });
                 }
 
+                // Konfirmasi close
                 const confirmEmbed = new EmbedBuilder()
                     .setColor('#FF0000')
                     .setDescription('Apakah kamu yakin ingin menutup ticket ini?');
@@ -111,10 +113,13 @@ Klik tombol dibawah untuk membuat ticket:
             else if (customId === 'ticket_close_confirm') {
                 const channel = interaction.channel;
                 
+                // CEK JENIS: THREAD ATAU CHANNEL
                 if (channel.isThread?.()) {
+                    // Untuk thread: archive dulu baru delete
                     await channel.setArchived(true).catch(() => {});
                     await channel.delete().catch(() => {});
                 } else {
+                    // Untuk channel biasa
                     await channel.delete().catch(() => {});
                 }
             }
@@ -129,6 +134,7 @@ Klik tombol dibawah untuk membuat ticket:
 
             // ===== CLAIM TICKET =====
             else if (customId === 'ticket_claim') {
+                // Cek apakah user adalah staff (punya permission manage channels)
                 if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
                     return interaction.reply({ 
                         content: '❌ Hanya staff yang bisa claim ticket!', 
@@ -145,6 +151,8 @@ Klik tombol dibawah untuk membuat ticket:
 
         } catch (error) {
             console.error('Ticket button error:', error);
+            
+            // Kalau channel sudah dihapus, jangan kirim reply
             if (error.message.includes('Unknown Channel')) return;
             
             try {
@@ -157,44 +165,183 @@ Klik tombol dibawah untuk membuat ticket:
     }
 };
 
-// ===== FUNGSI MEMBUAT TICKET =====
-async function buatTicket(interaction, client, tipe) {
+// ===== FUNGSI MEMBUAT TICKET ORDER (THREAD - DI BAWAH CHAT) =====
+async function buatTicketOrder(interaction, client) {
     try {
         const user = interaction.user;
-        const guild = interaction.guild;
         const channel = interaction.channel;
+        const guild = interaction.guild;
 
-        // Cek apakah user sudah punya ticket aktif
-        const existingChannel = guild.channels.cache.find(
-            c => c.name === `ticket-${user.username.toLowerCase()}`
-        );
-        
-        const existingThread = channel.threads?.cache.find(
-            t => t.name === `ticket-${user.username}` && !t.archived
+        // Cek apakah user sudah punya thread order aktif
+        const existingThread = channel.threads.cache.find(
+            t => t.name === `order-${user.username}` && !t.archived
         );
 
-        if (existingChannel || existingThread) {
+        if (existingThread) {
             return interaction.reply({ 
-                content: `❌ Kamu sudah punya ticket aktif!`, 
+                content: `❌ Kamu sudah punya ticket order di ${existingThread}!`, 
                 ephemeral: true 
             });
         }
 
-        // Buat channel ticket (semua jadi channel, biar mirip Ticket King)
-        let category = guild.channels.cache.find(c => 
-            c.name === 'TICKETS' && c.type === ChannelType.GuildCategory
+        // Buat thread (ticket di bawah chat)
+        const thread = await channel.threads.create({
+            name: `order-${user.username}`,
+            autoArchiveDuration: 1440, // 24 jam
+            type: ChannelType.PrivateThread,
+            reason: `Ticket order dari ${user.tag}`
+        });
+
+        // Add user ke thread
+        await thread.members.add(user.id);
+
+        // ===== TAMBAH PERMISSION UNTUK ROLE ADMIN =====
+        const adminRole = guild.roles.cache.find(r => r.name === 'Admin');
+        if (adminRole) {
+            await thread.members.add(adminRole.id);
+        }
+        
+        const modRole = guild.roles.cache.find(r => r.name === 'Moderator');
+        if (modRole) {
+            await thread.members.add(modRole.id);
+        }
+
+        // ===== CEK STATUS TOKO - HANYA KIRIM JIKA TUTUP =====
+        const tokoCommand = client.commands.get('toko');
+        
+        if (tokoCommand) {
+            const status = client.tokoStatus || 'tutup';
+            
+            // HANYA KIRIM PESAN KALAU TOKO TUTUP
+            if (status === 'tutup') {
+                const jamOperasional = client.jamOperasional || {
+                    'Senin-Jumat': '12.00 - 22.00',
+                    'Sabtu-Minggu': '08.00 - 23.00'
+                };
+
+                const sekarang = new Date();
+                const hari = sekarang.toLocaleDateString('id-ID', { weekday: 'long' });
+                let jamHariIni = '';
+
+                if (hari.includes('Senin') || hari.includes('Selasa') || hari.includes('Rabu') || 
+                    hari.includes('Kamis') || hari.includes('Jumat')) {
+                    jamHariIni = jamOperasional['Senin-Jumat'] || '12.00 - 22.00';
+                } else {
+                    jamHariIni = jamOperasional['Sabtu-Minggu'] || '08.00 - 23.00';
+                }
+
+                const tutupEmbed = new EmbedBuilder()
+                    .setColor('#FF0000')
+                    .setTitle('🔴 **TOKO SEDANG TUTUP**')
+                    .setDescription(`
+Maaf, toko sedang tutup 😴
+
+**⏰ JAM OPERASIONAL:**
+${Object.entries(jamOperasional).map(([hari, jam]) => `• **${hari}**: ${jam}`).join('\n')}
+
+**📅 Hari ini**: ${hari}
+**⏱️ Jam buka**: ${jamHariIni}
+
+Silakan kembali saat toko sudah buka.
+Terima kasih! 🙏
+                    `)
+                    .setTimestamp();
+
+                await thread.send({ embeds: [tutupEmbed] });
+            }
+            // KALAU TOKO BUKA, TIDAK ADA KODE APAPUN - TIDAK KIRIM PESAN
+        }
+
+        // Buat embed notifikasi ticket order - style Ticket King
+        const ticketEmbed = new EmbedBuilder()
+            .setColor('#00FF00')
+            .setTitle('Ticket Opened')
+            .setDescription(`${user} has created a new 🐍 Order ticket.`)
+            .setFooter({ text: 'Dreamix Store | /close' })
+            .setTimestamp();
+
+        // Buat button actions
+        const row = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('ticket_close')
+                    .setLabel('Close Ticket')
+                    .setStyle(ButtonStyle.Danger),
+                new ButtonBuilder()
+                    .setCustomId('ticket_claim')
+                    .setLabel('Claim Ticket')
+                    .setStyle(ButtonStyle.Secondary)
+            );
+
+        // Kirim pesan utama ticket
+        await thread.send({ 
+            content: `${user}`, 
+            embeds: [ticketEmbed], 
+            components: [row] 
+        });
+
+        // Kirim notifikasi ke user - style Ticket King
+        const successEmbed = new EmbedBuilder()
+            .setColor('#00FF00')
+            .setDescription(`Your ticket has been created!\n\n[Go to Ticket](${thread.url})`);
+
+        await interaction.reply({ 
+            embeds: [successEmbed],
+            ephemeral: true 
+        });
+
+    } catch (error) {
+        console.error('Buat ticket order error:', error);
+        await interaction.reply({ 
+            content: '❌ Gagal membuat ticket order: ' + error.message, 
+            ephemeral: true 
+        });
+    }
+}
+
+// ===== FUNGSI MEMBUAT TICKET BANTUAN (CHANNEL) =====
+async function buatTicketBantuan(interaction, client) {
+    try {
+        const user = interaction.user;
+        const guild = interaction.guild;
+
+        // Cek apakah user sudah punya ticket bantuan
+        const existingChannel = guild.channels.cache.find(
+            c => c.name === `bantuan-${user.username.toLowerCase()}`
         );
 
-        if (!category) {
-            category = await guild.channels.create({
-                name: 'TICKETS',
-                type: ChannelType.GuildCategory
+        if (existingChannel) {
+            return interaction.reply({ 
+                content: `❌ Kamu sudah punya ticket bantuan di ${existingChannel}!`, 
+                ephemeral: true 
             });
         }
 
+        // Cari category ticket bantuan
+        let category = guild.channels.cache.find(c => 
+            c.name === 'TICKET BANTUAN' && c.type === ChannelType.GuildCategory
+        );
+
+        // Buat category jika belum ada
+        if (!category) {
+            category = await guild.channels.create({
+                name: 'TICKET BANTUAN',
+                type: ChannelType.GuildCategory,
+                permissionOverwrites: [
+                    {
+                        id: guild.id,
+                        deny: [PermissionsBitField.Flags.ViewChannel]
+                    }
+                ]
+            });
+        }
+
+        // Cari role Admin
+        const adminRole = guild.roles.cache.find(r => r.name === 'Admin');
+        
         // Buat channel ticket baru
         const ticketChannel = await guild.channels.create({
-            name: `ticket-${user.username.toLowerCase()}`,
+            name: `bantuan-${user.username.toLowerCase()}`,
             type: ChannelType.GuildText,
             parent: category.id,
             permissionOverwrites: [
@@ -221,8 +368,17 @@ async function buatTicket(interaction, client, tipe) {
             ]
         });
 
-        // Role staff yang bisa melihat ticket (Admin, Moderator, Support)
-        const staffRoles = ['Admin', 'Moderator', 'Support'];
+        // ===== TAMBAHKAN PERMISSION UNTUK ROLE ADMIN =====
+        if (adminRole) {
+            await ticketChannel.permissionOverwrites.create(adminRole, {
+                ViewChannel: true,
+                SendMessages: true,
+                ReadMessageHistory: true
+            });
+        }
+
+        // Role staff lain yang bisa melihat ticket
+        const staffRoles = ['Moderator', 'Support'];
         for (const roleName of staffRoles) {
             const role = guild.roles.cache.find(r => r.name === roleName);
             if (role) {
@@ -234,15 +390,61 @@ async function buatTicket(interaction, client, tipe) {
             }
         }
 
-        // Buat embed notifikasi ticket - MIRIP TICKET KING
+        // ===== CEK STATUS TOKO - HANYA KIRIM JIKA TUTUP =====
+        const tokoCommand = client.commands.get('toko');
+        
+        if (tokoCommand) {
+            const status = client.tokoStatus || 'tutup';
+            
+            // HANYA KIRIM PESAN KALAU TOKO TUTUP
+            if (status === 'tutup') {
+                const jamOperasional = client.jamOperasional || {
+                    'Senin-Jumat': '12.00 - 22.00',
+                    'Sabtu-Minggu': '08.00 - 23.00'
+                };
+
+                const sekarang = new Date();
+                const hari = sekarang.toLocaleDateString('id-ID', { weekday: 'long' });
+                let jamHariIni = '';
+
+                if (hari.includes('Senin') || hari.includes('Selasa') || hari.includes('Rabu') || 
+                    hari.includes('Kamis') || hari.includes('Jumat')) {
+                    jamHariIni = jamOperasional['Senin-Jumat'] || '12.00 - 22.00';
+                } else {
+                    jamHariIni = jamOperasional['Sabtu-Minggu'] || '08.00 - 23.00';
+                }
+
+                const tutupEmbed = new EmbedBuilder()
+                    .setColor('#FF0000')
+                    .setTitle('🔴 **TOKO SEDANG TUTUP**')
+                    .setDescription(`
+Maaf, toko sedang tutup 😴
+
+**⏰ JAM OPERASIONAL:**
+${Object.entries(jamOperasional).map(([hari, jam]) => `• **${hari}**: ${jam}`).join('\n')}
+
+**📅 Hari ini**: ${hari}
+**⏱️ Jam buka**: ${jamHariIni}
+
+Silakan kembali saat toko sudah buka.
+Terima kasih! 🙏
+                    `)
+                    .setTimestamp();
+
+                await ticketChannel.send({ embeds: [tutupEmbed] });
+            }
+            // KALAU TOKO BUKA, TIDAK ADA KODE APAPUN - TIDAK KIRIM PESAN
+        }
+
+        // Buat embed notifikasi ticket bantuan - style Ticket King
         const ticketEmbed = new EmbedBuilder()
-            .setColor('#00FF00')
+            .setColor('#0000FF')
             .setTitle('Ticket Opened')
-            .setDescription(`${user} has created a new ${tipe} ticket.`)
-            .setFooter({ text: 'Ticket King | /close' })
+            .setDescription(`${user} has created a new 🔵 Bantuan ticket.`)
+            .setFooter({ text: 'Dreamix Store | /close' })
             .setTimestamp();
 
-        // Buat button actions (mirip Ticket King)
+        // Buat button actions
         const row = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
@@ -252,7 +454,7 @@ async function buatTicket(interaction, client, tipe) {
                 new ButtonBuilder()
                     .setCustomId('ticket_claim')
                     .setLabel('Claim Ticket')
-                    .setStyle(ButtonStyle.Primary)
+                    .setStyle(ButtonStyle.Secondary)
             );
 
         // Kirim pesan utama ticket
@@ -262,7 +464,7 @@ async function buatTicket(interaction, client, tipe) {
             components: [row] 
         });
 
-        // Kirim notifikasi ke user (mirip Ticket King)
+        // Kirim notifikasi ke user - style Ticket King
         const successEmbed = new EmbedBuilder()
             .setColor('#00FF00')
             .setDescription(`Your ticket has been created!\n\n[Go to Ticket](${ticketChannel.url})`);
@@ -273,9 +475,9 @@ async function buatTicket(interaction, client, tipe) {
         });
 
     } catch (error) {
-        console.error('Buat ticket error:', error);
+        console.error('Buat ticket bantuan error:', error);
         await interaction.reply({ 
-            content: '❌ Gagal membuat ticket: ' + error.message, 
+            content: '❌ Gagal membuat ticket bantuan: ' + error.message, 
             ephemeral: true 
         });
     }
